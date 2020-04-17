@@ -11,7 +11,7 @@ void printGeneralFileSystemInformation(struct ext2_super_block *ext2)
     printf("\b\b\b%d   ", (1024 << ext2->s_log_block_size));
       
     printf("\r\nTotal Number of Blocks: ...");
-    printf("\b\b\b%d   ", ext2->s_blocks_count)
+    printf("\b\b\b%d   ", ext2->s_blocks_count);
 
     printf("\r\nDisk Size in Bytes: ...");
     printf("\b\b\b%d   ", (1024 << ext2->s_log_block_size) * ext2->s_blocks_count);
@@ -64,15 +64,15 @@ void printIndividualGroupInformation(FILE* ext2, int block)
     printf("\r\nFree Inode IDs: ...");
     printf("\b\b\b%d   ",);
 
-    printf("\r\n")
+    printf("\r\n");
 }
 
-void printAllGroupsInformation(File* ext2)
+void printAllGroupsInformation(FILE* ext2)
 {
     printf("\r\n\r\n--Individual Group Information--");
     while(1)
     {
-        if() //no more groups
+        if(1) //no more groups
             break;
 
         printIndividualGroupInformation(ext2, 0);
@@ -90,10 +90,10 @@ void printRootDirectoryEntry(FILE* ext2)
 
 void printRootDirectoryEntries(FILE* ext2)
 {
-    printf("\r\n\r\n--Root Directory Entries--")
+    printf("\r\n\r\n--Root Directory Entries--");
     while(1)
     {
-        if() //no more entries
+        if(1) //no more entries
             break;
 
         printRootDirectoryEntry(ext2);
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     if(argc != 2)
     {
         printf("ERROR: Please include the path to a disk image as the first argument");
-        EXIT(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     
     if (open(argv[1], O_RDONLY) == -1) {
