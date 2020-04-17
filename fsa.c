@@ -109,7 +109,7 @@ void printIndividualGroupInformation(int blockGroup, struct ext2_super_block *bl
     printf("\r\n");
 }
 
-void printAllGroupsInformation(FILE* ext2)
+void printAllGroupsInformation(FILE* ext2, struct ext2_super_block *block)
 {
     printf("\r\n\r\n--Individual Group Information--");
     while(1)
@@ -119,7 +119,7 @@ void printAllGroupsInformation(FILE* ext2)
 
         struct ext2_group_desc *desc = malloc(sizeof(struct ext2_group_desc));
         fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
-        printIndividualGroupInformation(ext2, 0);
+        printIndividualGroupInformation(int blockGroup, struct ext2_super_block *block, struct ext2_group_desc desc);
     }
 }
 
@@ -166,7 +166,9 @@ int main(int argc, char *argv[])
 
     printGeneralFileSystemInformation(block);
 
-    int groupSize = (1024 << block->s_log_block_size) * block->s_blocks_per_group;
+    // int groupSize = (1024 << block->s_log_block_size) * block->s_blocks_per_group;
 
-    fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
+    // fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
+
+    printAllGroupsInformation(ext2disk, block);
 }
