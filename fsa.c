@@ -32,37 +32,79 @@ void printGeneralFileSystemInformation(struct ext2_super_block *ext2)
     printf("\b\b\b%d   ", ext2->s_blocks_count / ext2->s_blocks_per_group);
 }
 
-void printIndividualGroupInformation(FILE* ext2, int block)
+void printIndividualGroupInformation(int blockGroup, struct ext2_super_block *block, struct ext2_group_desc desc);
 {
     printf("\r\n-Group ...-");
-    printf("\b\b\b%d   ", block);
+    printf("\b\b\b%d   ", blockGroup);
 
     printf("\r\nBlock IDs: ...");
-    printf("\b\b\b%d   ",);
+    if(blockGroup * (block->s_blocks_per_group + 1) <= block->s_blocks_count)
+        printf("\b\b\b%d-%d  ", blockGroup * block->s_blocks_per_group + 1, blockGroup * (block->s_blocks_per_group + 1));
+    else
+        printf("\b\b\b%d-%d  ", blockGroup * block->s_blocks_per_group + 1, block->s_blocks_count);
     
     printf("\r\nBlock Bitmap Block ID: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_block_bitmap);
 
     printf("\r\nInode Bitmap Block ID: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_inode_bitmap);
 
     printf("\r\nInode Table Block ID: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_inode_table);
 
     printf("\r\nNumber of Free Blocks: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_free_blocks_count);
 
     printf("\r\nNumber of Free Inodes: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_free_inodes_count);
 
     printf("\r\nNumber of Directories: ...");
-    printf("\b\b\b%d   ",);
+    printf("\b\b\b%d   ", desc->bg_used_dirs_count);
 
-    printf("\r\nFree Block IDs: ...");
-    printf("\b\b\b%d   ",);
+    printf("\r\nFree Block IDs: ");
+    int i = 0;
+    while(i < 32)
+    {
+        if(1 & desc->bg_block_bitmap >> i)
+        {
+            printf("%d", blockGroup * block->s_blocks_per_group + ++i);
+            while(1)
+            {
+                if(!(1 & desc->bg_block_bitmap >> i) || i >= 32)
+                {
+                    printf("-%d", i);
+                    break;
+                }
+                i++;
+            }
+            printf(", ");
+        }
+        
+        i++;
+    }
+    
 
-    printf("\r\nFree Inode IDs: ...");
-    printf("\b\b\b%d   ",);
+    printf("\r\nFree Inode IDs: ");
+    i = 0;
+    while(i < 32)
+    {
+        if(1 & desc->bg_inode_bitmap >> i)
+        {
+            printf("%d", blockGroup * (block->s_inodes_per_group * block->s_inode_size / (1024 << block->s_log_block_size)) + ++i);
+            while(1)
+            {
+                if(!(1 & desc->bg_block_bitmap >> i) || i >= 32)
+                {
+                    printf("-%d", i);
+                    break;
+                }
+                i++;
+            }
+            printf(", ");
+        }
+        
+        i++;
+    }    
 
     printf("\r\n");
 }
@@ -75,6 +117,8 @@ void printAllGroupsInformation(FILE* ext2)
         if(1) //no more groups
             break;
 
+        struct ext2_group_desc *desc = malloc(sizeof(struct ext2_group_desc));
+        fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
         printIndividualGroupInformation(ext2, 0);
     }
 }
@@ -123,4 +167,6 @@ int main(int argc, char *argv[])
     printGeneralFileSystemInformation(block);
 
     int groupSize = (1024 << block->s_log_block_size) * block->s_blocks_per_group;
+
+    fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
 }
