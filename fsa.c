@@ -114,35 +114,49 @@ void printAllGroupsInformation(FILE* ext2, struct ext2_super_block *block)
     printf("\r\n\r\n--Individual Group Information--");
     while(1)
     {
-        if(1) //no more groups
+        if(ftell(ext2) >= (1024 << block->s_log_block_size) * block->s_blocks_count)) //no more groups
             break;
 
         struct ext2_group_desc *desc = malloc(sizeof(struct ext2_group_desc));
+        fseek(ext2disk, block->s_blocks_per_group * (1024 << block->s_log_block_size) - 32, SEEK_CUR);
         fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
         printIndividualGroupInformation(int blockGroup, struct ext2_super_block *block, struct ext2_group_desc desc);
+        free(desc);
     }
 }
 
-void printRootDirectoryEntry(FILE* ext2)
+void printEntry(struct ext2_dir_entry2 *entry)
 {
     printf("\r\nInode: ...");
+    printf("\b\b\b%d   ", entry->inode);
+
     printf("\r\nEntry Length: ...");
+    printf("\b\b\b%d   ", entry->rec_len);
+
     printf("\r\nName Length: ...");
+    printf("\b\b\b%d   ", entry->name_len);
+
     printf("\r\nFile Type: ...");
+    printf("\b\b\b%d   ", entry->file_type);
+
     printf("\r\nName: ...");
+    printf("\b\b\b%s   ", entry->name);
 }
 
-void printRootDirectoryEntries(FILE* ext2)
+void printRootDirectoryEntries(FILE* ext2, struct ext2_super_block *block, struct ext2_group_desc desc)
 {
     printf("\r\n\r\n--Root Directory Entries--");
-    while(1)
-    {
-        if(1) //no more entries
-            break;
 
-        printRootDirectoryEntry(ext2);
-    }
-    
+    struct ext2_dir_entry2 *entry = malloc(sizeof(struct ext_dir_entry2));
+    struct ext2_inode *node = malloc(sizeof(struct ext2_inode));
+    fseek(ext2disk, desc->bg_inode_table * 1024 + sizeof(struct ext2_inode), SEEK_SET);
+    fread(node, sizeof(struct ext2_inode), 1, ext2disk);
+    entry = node->i_block[1];
+    while(entry->Inode > 0)
+    {
+        printEntry(entry);
+        entry = entry + entry->rec_len;
+    }    
 }
 
 int main(int argc, char *argv[])
@@ -171,4 +185,9 @@ int main(int argc, char *argv[])
     // fread(desc, (sizeof(struct ext2_group_desc), 1, ext2disk);
 
     printAllGroupsInformation(ext2disk, block);
+
+    printRootDirectoryEntries(ext2disk, block);
+
+
+    free(block);
 }
